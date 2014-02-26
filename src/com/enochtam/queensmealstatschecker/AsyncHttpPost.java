@@ -95,7 +95,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     }
 
     //background
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     protected String doInBackground(String... params) {
         byte[] result = null;
         String loginResultStr = "";
@@ -146,9 +147,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             e.printStackTrace();
             return "unidentified";
         }
-        //Log.e("MainActivity", "==========================================================================");
-        //Log.e("MainActivity", htmlResult);
-        //Log.e("MainActivity", "==========================================================================");
 
         return htmlResult;
     }

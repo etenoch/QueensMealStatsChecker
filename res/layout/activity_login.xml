@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="User Credentials for Student Housing Gateway NOT NetID"
+        android:text="Use Credentials for Student Housing Gateway NOT NetID"
         android:id="@+id/textView2"
         android:paddingLeft="5dp"
         android:paddingBottom="5dp" />
