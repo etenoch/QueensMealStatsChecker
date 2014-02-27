@@ -3,7 +3,6 @@
 
     <style name="AppTheme"
         parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        
     </style>
 
     <style name="MyActionBar"
