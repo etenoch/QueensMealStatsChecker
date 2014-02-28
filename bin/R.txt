@@ -116,13 +116,14 @@ int bool abc_config_actionMenuItemAllCaps 0x7f070005
 int bool abc_config_allowActionMenuItemTextWithIcon 0x7f070004
 int bool abc_config_showMenuShortcutsWhenKeyboardPresent 0x7f070003
 int bool abc_split_action_bar_is_narrow 0x7f070002
-int color abc_search_url_text_holo 0x7f080006
+int color abc_search_url_text_holo 0x7f080007
 int color abc_search_url_text_normal 0x7f080000
 int color abc_search_url_text_pressed 0x7f080002
 int color abc_search_url_text_selected 0x7f080001
 int color actionbar_text 0x7f080005
 int color black 0x7f080004
 int color queensRed 0x7f080003
+int color widgetTextColor 0x7f080006
 int dimen abc_action_bar_default_height 0x7f090002
 int dimen abc_action_bar_icon_vertical_padding 0x7f090003
 int dimen abc_action_bar_progress_bar_size 0x7f09000a
@@ -306,7 +307,7 @@ int id submit_area 0x7f060039
 int id tabMode 0x7f060002
 int id textView 0x7f06003c
 int id textView2 0x7f06003d
-int id textView3 0x7f060052
+int id textView3 0x7f060053
 int id title 0x7f06002b
 int id top_action_bar 0x7f060020
 int id up 0x7f060021
@@ -317,7 +318,7 @@ int id view2 0x7f060048
 int id view3 0x7f06004a
 int id widgetDiningDollars 0x7f060055
 int id widgetFlexFunds 0x7f060054
-int id widgetLastUpdated 0x7f060053
+int id widgetLastUpdated 0x7f060052
 int id widgetLeftThisWeek 0x7f060051
 int id withText 0x7f06000c
 int integer abc_max_action_buttons 0x7f0a0000

@@ -30,8 +30,8 @@
 
         <Preference
             android:key="reset_application"
-            android:title="Reset All"
-            android:summary="'Factory' Reset Application"
+            android:title="Reset All/Logout"
+            android:summary="Will cleared stored data"
             />
 
 

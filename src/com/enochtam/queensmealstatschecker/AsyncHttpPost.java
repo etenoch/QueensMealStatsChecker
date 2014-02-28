@@ -215,12 +215,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                 }
             }
 
-            DateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
-            dateFormat.setTimeZone(TimeZone.getTimeZone("America/New_York"));
             long unixTime = System.currentTimeMillis() / 1000L;
-            Date date = new Date ();
-            date.setTime((long)unixTime*1000);
-            String currentDateTime = dateFormat.format(date);
+            String currentDateTime = Helper.getTime(unixTime);
 
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong("lastUpdated", unixTime);
@@ -230,17 +226,31 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             editor.commit();
             if(status2TextView!=null){
                 status2TextView.setTextColor(mContext.getResources().getColor(R.color.black));
-                status2TextView.setText("Last Updated: "+currentDateTime+" EST");
+                status2TextView.setText("Last Updated: "+currentDateTime);
             }
+            /*
+            remoteView = new RemoteViews(mContext.getPackageName(),R.layout.mealchecker_appwidget_layout);
+            MealCheckerWidgetProvider m = new MealCheckerWidgetProvider();
+            m.updateWidget(mContext, AppWidgetManager.getInstance(mContext));
+            m.loadPreviousDataWidget();
+            ComponentName mealCheckerWidget = new ComponentName(mContext,MealCheckerWidgetProvider.class);
+            //AppWidgetManager.getInstance(mContext).updateAppWidget(mealCheckerWidget,remoteView);
+        	
+            
+        	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, MealCheckerWidgetProvider.class));
+            if (appWidgetIds.length > 0) {
+                //new MealCheckerWidgetProvider().onUpdate(mContext, appWidgetManager, appWidgetIds);
+                new MealCheckerWidgetProvider().updateWidget(mContext, appWidgetManager);
 
+            }
+            */
+            
         }
     }
     protected void onPostExecuteInWidget(String result){
-        if((result.toLowerCase().contains("unidentified".toLowerCase()))){
+        if( !(result.toLowerCase().contains("unidentified".toLowerCase())) && !(result.toLowerCase().contains("error".toLowerCase())) ){
 
-        }else if(result.toLowerCase().contains("error".toLowerCase())){
-
-        }else{
             MealStats mealStats = new MealStats(result);
             mealStats.parseHtml();
             String totalFlex =  "$" +String.valueOf(mealStats.getTotalFlex());
@@ -261,14 +271,11 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                 }
             }
 
-            DateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
-            dateFormat.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-            long unixTime = System.currentTimeMillis() / 1000L;
-            Date date = new Date ();
-            date.setTime((long)unixTime*1000);
-            String currentDateTime = dateFormat.format(date);
 
-            remoteView.setTextViewText(R.id.widgetLastUpdated, "Last Updated: "+currentDateTime);
+            long unixTime = System.currentTimeMillis() / 1000L;
+            String currentDateTime = Helper.getTime(unixTime);
+
+            remoteView.setTextViewText(R.id.widgetLastUpdated, "Last Updated:"+currentDateTime);
 
 
             SharedPreferences.Editor editor = prefs.edit();
@@ -278,15 +285,15 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             editor.putString("leftThisWeek", leftThisWeek);
             editor.commit();
 
-
+    		/*
             Intent launchAppIntent = new Intent(mContext, MainActivity.class);
             PendingIntent launchAppPendingIntent = PendingIntent.getActivity(mContext,
                     0, launchAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.full_widget, launchAppPendingIntent);
+			*/
 
-            ComponentName tutListWidget = new ComponentName(mContext,
-                    MealCheckerWidgetProvider.class);
-            appWidgetManager.updateAppWidget(tutListWidget, remoteView);
+            ComponentName mealCheckerWidget = new ComponentName(mContext,MealCheckerWidgetProvider.class);
+            appWidgetManager.updateAppWidget(mealCheckerWidget, remoteView);
         }
     }
 }

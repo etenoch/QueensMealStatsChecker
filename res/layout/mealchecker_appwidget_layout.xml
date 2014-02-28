@@ -9,37 +9,21 @@
     android:id="@+id/full_widget"
     >
 
-
     <TextView
+        android:id="@+id/widgetLeftThisWeek"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/widgetLeftThisWeek"
-
+        android:layout_marginBottom="-10dp"
+        android:layout_marginTop="-10dp"
         android:paddingLeft="5dp"
-        android:paddingTop="5dp"
         android:paddingRight="3dp"
-        android:paddingBottom="5dp"
-        android:textColor="@color/queensRed"
         android:text="-"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/queensRed"
+        android:textSize="55sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Meals Left This Week"
-        android:id="@+id/textView3"
-
-        android:paddingLeft="0dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:textColor="@color/black"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/widgetLeftThisWeek" />
-
-    <TextView
+      <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -53,14 +37,28 @@
         android:layout_below="@+id/widgetLeftThisWeek"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+    
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/widgetLeftThisWeek"
+        android:paddingBottom="5dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:text="Meals Left\nThis Week"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/black" />
 
     <RelativeLayout
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignBottom="@+id/textView3"
-        android:layout_toRightOf="@+id/textView3"
-        android:layout_marginLeft="25dp">
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="55dp"
+        android:layout_toRightOf="@+id/textView3" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -86,40 +84,37 @@
             android:layout_alignParentEnd="true"
             android:text="-"
             android:textStyle="bold" />
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignBottom="@+id/widgetLastUpdated"
-        android:layout_below="@+id/textView3"
-        android:layout_toRightOf="@+id/textView3"
-        android:layout_marginLeft="25dp">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Dining: "
-            android:id="@+id/textView"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true" >
 
-            android:padding="5dp"
-            android:textColor="@color/black"
-             />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="Dining: "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/widgetDiningDollars"
-            android:padding="5dp"
-            android:textColor="@color/queensRed"
-            android:gravity="right"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:text="-"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/widgetDiningDollars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="right"
+                android:padding="5dp"
+                android:text="-"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/queensRed"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
 

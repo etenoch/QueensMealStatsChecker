@@ -1,5 +1,7 @@
 package com.enochtam.queensmealstatschecker;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -7,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,10 +79,12 @@ public class MainActivity extends ActionBarActivity {
 
     private boolean refreshData(){
         HashMap<String, String> data = new HashMap<String, String>();
+        
+        String username = prefs.getString("username", "");
+        String password = prefs.getString("password", "");
+        
+        if(Helper.checkUserAndPass(username, password)){
 
-        if(checkUserAndPass()){
-            String username = prefs.getString("username", "");
-            String password = prefs.getString("password", "");
             loginNumberTextView.setText(username);
             data.put("username", username);
             data.put("password", password);
@@ -88,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
             status1TextView.setText("Username and Password Not Provided");
             return false;
         }
-        if(!isOnline()){
+        if(!Helper.isOnline(this)){
             status1TextView.setTextColor(getResources().getColor(R.color.queensRed));
             status1TextView.setText("No Internet Connection");
             loadPreviousData();
@@ -105,6 +110,14 @@ public class MainActivity extends ActionBarActivity {
         AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data,this,rootView);
         asyncHttpPost.execute();
 
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MealCheckerWidgetProvider.class));
+        if (appWidgetIds.length > 0) {
+            new MealCheckerWidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
+            //new MealCheckerWidgetProvider().updateWidget(this, appWidgetManager);
+            //Log.e("widget - ", "******* Widget Updated **********");
+        }
+        
         return true;
     }
 
@@ -112,12 +125,9 @@ public class MainActivity extends ActionBarActivity {
         String flexFunds = prefs.getString("flexFunds", "");
         String diningDollars = prefs.getString("diningDollars", "");
         String leftThisWeek = prefs.getString("leftThisWeek", "");
+        
         long lastUpdatedUnix = prefs.getLong("lastUpdated", 0);
-        Date date = new Date ();
-        date.setTime((long)lastUpdatedUnix*1000);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-        String lastUpdated = dateFormat.format(date);
+        String lastUpdated = Helper.getTime(lastUpdatedUnix);
 
         if (flexFunds == null || flexFunds.isEmpty()) {
             flexFundsTextView.setText("No Data");
@@ -143,30 +153,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private boolean checkUserAndPass(){
-        String username = prefs.getString("username", "");
-        String password = prefs.getString("password", "");
-
-        boolean error = false;
-        if (username == null || username.isEmpty()) {
-            error = true;
-        }
-        if (password == null || password.isEmpty()) {
-            error = true;
-        }
-        return !error;
-    }
-
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
@@ -186,7 +172,7 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }else if(id == R.id.action_refresh){
             refreshData();
-            Toast.makeText(this, "Refreshing Data", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Refreshing Data", Toast.LENGTH_SHORT).show();
             return true;
         }else if(id == R.id.action_about){
             Intent i = new Intent(MainActivity.this, AboutActivity.class);
