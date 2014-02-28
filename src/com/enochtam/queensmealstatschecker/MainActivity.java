@@ -1,27 +1,20 @@
 package com.enochtam.queensmealstatschecker;
 
+import java.util.HashMap;
+
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TimeZone;
 
 public class MainActivity extends ActionBarActivity {
     SharedPreferences prefs;
@@ -54,6 +47,7 @@ public class MainActivity extends ActionBarActivity {
         if(savedInstanceState==null){
             loadPreviousData();
             refreshData();
+        	
         }
 
     }
@@ -82,6 +76,7 @@ public class MainActivity extends ActionBarActivity {
         
         String username = prefs.getString("username", "");
         String password = prefs.getString("password", "");
+        
         
         if(Helper.checkUserAndPass(username, password)){
 
@@ -113,9 +108,7 @@ public class MainActivity extends ActionBarActivity {
     	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MealCheckerWidgetProvider.class));
         if (appWidgetIds.length > 0) {
-            new MealCheckerWidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
-            //new MealCheckerWidgetProvider().updateWidget(this, appWidgetManager);
-            //Log.e("widget - ", "******* Widget Updated **********");
+        	new MealCheckerWidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
         }
         
         return true;
@@ -171,8 +164,15 @@ public class MainActivity extends ActionBarActivity {
             startActivity(i);
             return true;
         }else if(id == R.id.action_refresh){
-            refreshData();
-            Toast.makeText(getApplicationContext(), "Refreshing Data", Toast.LENGTH_SHORT).show();
+            long currentUnixTime = System.currentTimeMillis() / 1000L;
+            long lastUpdatedUnix = prefs.getLong("lastUpdated", 0);
+        	if((currentUnixTime-lastUpdatedUnix)>30){
+                refreshData();
+                Toast.makeText(getApplicationContext(), "Refreshing Data", Toast.LENGTH_SHORT).show();
+        	}else{
+                Toast.makeText(getApplicationContext(), "Too Soon, Please wait a while", Toast.LENGTH_SHORT).show();
+        	}
+        	
             return true;
         }else if(id == R.id.action_about){
             Intent i = new Intent(MainActivity.this, AboutActivity.class);

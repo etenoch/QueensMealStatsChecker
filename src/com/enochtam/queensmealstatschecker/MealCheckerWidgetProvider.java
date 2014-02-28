@@ -1,22 +1,15 @@
 package com.enochtam.queensmealstatschecker;
 
+import java.util.HashMap;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.TextView;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TimeZone;
 
 public class MealCheckerWidgetProvider extends AppWidgetProvider {
     SharedPreferences prefs;
@@ -36,6 +29,12 @@ public class MealCheckerWidgetProvider extends AppWidgetProvider {
         this.remoteView = new RemoteViews(context.getPackageName(),R.layout.mealchecker_appwidget_layout);
         this.appWidgetManager = appWidgetManager;
         this.context=context;
+        
+        Intent launchAppIntent = new Intent(context, MainActivity.class);
+        PendingIntent launchAppPendingIntent = PendingIntent.getActivity(context,
+                0, launchAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.full_widget, launchAppPendingIntent);
+		
         loadPreviousDataWidget();
     }
     public void loadPreviousDataWidget(){

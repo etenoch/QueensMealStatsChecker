@@ -1,19 +1,12 @@
 package com.enochtam.queensmealstatschecker;
 
 
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.text.Html;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RemoteViews;
-import android.widget.TextView;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -30,16 +23,17 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.TimeZone;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.text.Html;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RemoteViews;
+import android.widget.TextView;
 
 public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     public String loginLink = "https://qusw.housing.queensu.ca:4430/login.asp?action=login";
@@ -49,7 +43,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     private HashMap<String, String> mData = null;// post data
 
     private Context mContext;
-    private View rootView;
+    @SuppressWarnings("unused")
+	private View rootView;
     private RemoteViews remoteView;
     private SharedPreferences prefs;
     private AppWidgetManager appWidgetManager;
@@ -57,6 +52,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     //instance variables for main activity
     private TextView flexFundsTextView;
     private TextView diningDollarsTextView;
+    @SuppressWarnings("unused")
     private TextView loginNumberTextView;
     private TextView status1TextView;
     private TextView status2TextView;

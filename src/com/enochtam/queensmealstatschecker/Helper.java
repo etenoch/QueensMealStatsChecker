@@ -6,10 +6,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
 
 public class Helper {
     public static String dateFormatStr = "yyyy/MM/dd hh:mm a";
