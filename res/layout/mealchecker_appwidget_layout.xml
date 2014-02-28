@@ -57,7 +57,7 @@
         android:layout_height="fill_parent"
         android:layout_alignBottom="@+id/textView3"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="55dp"
+        android:layout_marginLeft="65dp"
         android:layout_toRightOf="@+id/textView3" >
 
         <TextView

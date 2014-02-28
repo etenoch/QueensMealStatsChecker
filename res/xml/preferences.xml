@@ -31,7 +31,7 @@
         <Preference
             android:key="reset_application"
             android:title="Reset All/Logout"
-            android:summary="Will cleared stored data"
+            android:summary="Will clear stored data"
             />
 
 

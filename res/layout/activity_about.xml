@@ -6,30 +6,34 @@
     >
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="About"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="-5dp"
         android:padding="10dp"
+        android:paddingBottom="0dp"
         android:paddingLeft="10dp"
-        android:paddingTop="10dp"
         android:paddingRight="10dp"
-        android:paddingBottom="5dp" />
+        android:paddingTop="10dp"
+        android:text="About"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et eros elementum, aliquet risus non, dapibus nisl. Nunc viverra eros ut vulputate viverra. Suspendisse ut ligula eros. Quisque ipsum orci, sagittis in sapien quis, aliquam pretium nibh. Vivamus odio velit, tincidunt sit amet nunc vel, convallis ornare tellus. Ut diam eros, interdum nec ligula a, suscipit tincidunt urna. Nunc tincidunt quis neque vel pharetra. Quisque ornare dolor vel varius semper. Interdum et malesuada fames ac ante ipsum primis in faucibus. In hac habitasse platea dictumst. Suspendisse a accumsan purus. Donec tempus interdum eros ut dictum.  "
-        android:id="@+id/textView2"
-        android:paddingTop="0dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:autoLink="web"
+        android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:paddingTop="0dp"
+        android:text="Application developed by\nEnoch Tam, CompSci &apos;17\nFor more information get in touch at contact@enochtam.com\n\nUse at your own risk. This software comes with no guarantees. If you have problems you can contact me or submit an issue at \nhttp://enochtam.com/appissues"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </RelativeLayout>

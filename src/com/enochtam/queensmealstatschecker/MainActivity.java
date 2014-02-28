@@ -142,7 +142,7 @@ public class MainActivity extends ActionBarActivity {
         if (lastUpdated == null || lastUpdated.isEmpty()) {
             status2TextView.setText("Last Updated: never");
         }else{
-            status2TextView.setText("Last Updated: "+ lastUpdated+" EST");
+            status2TextView.setText("Last Updated: "+ lastUpdated);
         }
         if (leftThisWeek == null || leftThisWeek.isEmpty()) {
             leftThisWeekTextView.setText("No Data");

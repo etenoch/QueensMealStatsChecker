@@ -275,7 +275,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             long unixTime = System.currentTimeMillis() / 1000L;
             String currentDateTime = Helper.getTime(unixTime);
 
-            remoteView.setTextViewText(R.id.widgetLastUpdated, "Last Updated:"+currentDateTime);
+            remoteView.setTextViewText(R.id.widgetLastUpdated, "Last Updated: "+currentDateTime);
 
 
             SharedPreferences.Editor editor = prefs.edit();
