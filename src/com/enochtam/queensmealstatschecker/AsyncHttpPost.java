@@ -59,7 +59,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     private TextView leftThisWeekTextView;
     private LinearLayout mealPlanLinearLayout;
 
-
     private boolean inWidget = false;
 
     public AsyncHttpPost(HashMap<String, String> data,Context context,View rootView) {
@@ -124,8 +123,10 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             }
         }catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return "unidentified";
         }catch (Exception e) {
             e.printStackTrace();
+            return "unidentified";
         }
 
         HttpGet httpget_scrape = new HttpGet(mealStatsLink);
@@ -224,23 +225,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                 status2TextView.setTextColor(mContext.getResources().getColor(R.color.black));
                 status2TextView.setText("Last Updated: "+currentDateTime);
             }
-            /*
-            remoteView = new RemoteViews(mContext.getPackageName(),R.layout.mealchecker_appwidget_layout);
-            MealCheckerWidgetProvider m = new MealCheckerWidgetProvider();
-            m.updateWidget(mContext, AppWidgetManager.getInstance(mContext));
-            m.loadPreviousDataWidget();
-            ComponentName mealCheckerWidget = new ComponentName(mContext,MealCheckerWidgetProvider.class);
-            //AppWidgetManager.getInstance(mContext).updateAppWidget(mealCheckerWidget,remoteView);
-        	
-            
-        	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, MealCheckerWidgetProvider.class));
-            if (appWidgetIds.length > 0) {
-                //new MealCheckerWidgetProvider().onUpdate(mContext, appWidgetManager, appWidgetIds);
-                new MealCheckerWidgetProvider().updateWidget(mContext, appWidgetManager);
 
-            }
-            */
             
         }
     }
@@ -267,12 +252,10 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                 }
             }
 
-
             long unixTime = System.currentTimeMillis() / 1000L;
             String currentDateTime = Helper.getTime(unixTime);
 
             remoteView.setTextViewText(R.id.widgetLastUpdated, "Last Updated: "+currentDateTime);
-
 
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong("lastUpdated", unixTime);
@@ -280,13 +263,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             editor.putString("diningDollars", totalDining);
             editor.putString("leftThisWeek", leftThisWeek);
             editor.commit();
-
-    		/*
-            Intent launchAppIntent = new Intent(mContext, MainActivity.class);
-            PendingIntent launchAppPendingIntent = PendingIntent.getActivity(mContext,
-                    0, launchAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteView.setOnClickPendingIntent(R.id.full_widget, launchAppPendingIntent);
-			*/
 
             ComponentName mealCheckerWidget = new ComponentName(mContext,MealCheckerWidgetProvider.class);
             appWidgetManager.updateAppWidget(mealCheckerWidget, remoteView);

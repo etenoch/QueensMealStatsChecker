@@ -65,16 +65,5 @@ public class MealCheckerWidgetProvider extends AppWidgetProvider {
         }
     
     }
-    /*
-    public void finish(){
-        Intent launchAppIntent = new Intent(context, MainActivity.class);
-        PendingIntent launchAppPendingIntent = PendingIntent.getActivity(context,
-                0, launchAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.full_widget, launchAppPendingIntent);
 
-        ComponentName mealCheckerWidget = new ComponentName(context,
-                MealCheckerWidgetProvider.class);
-        appWidgetManager.updateAppWidget(mealCheckerWidget, remoteView);
-    }
-	*/
 }

@@ -88,10 +88,10 @@ public class MealStats {
     } // end parseHtml
 
     public double getTotalFlex(){
-        return amp+additionalAmp+ampBonus; //TODO make sure cents don't go over 100
+        return amp+additionalAmp+ampBonus;
     }
     public double getTotalDining(){
-        return myFunds+myFundsBonus; //TODO make sure cents don't go over 100
+        return myFunds+myFundsBonus;
     }
     public String toString(){
         return "Name: "+ name+"\nmyFunds: "+myFunds+"\nmyFundsBonus: "+myFundsBonus+"\namp: "+amp+"\nampBonus: "+ampBonus+"\nadditionalAmp: "+additionalAmp;

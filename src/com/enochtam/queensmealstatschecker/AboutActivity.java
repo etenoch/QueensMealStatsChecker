@@ -20,6 +20,16 @@ public class AboutActivity extends ActionBarActivity {
 
     }
 
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+            case android.R.id.home:
+            	super.onBackPressed();
+            	return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
