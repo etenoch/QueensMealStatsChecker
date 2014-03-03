@@ -23,9 +23,11 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -36,14 +38,16 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 public class AsyncHttpPost  extends AsyncTask<String, String, String> {
-    public String loginLink = "https://qusw.housing.queensu.ca:4430/login.asp?action=login";
-    public String mealStatsLink = "https://qusw.housing.queensu.ca:4430/common/mealstats.asp";
-    public String dateFormatStr = "yyyy/MM/dd HH:mm";
+	// constants for httprequests
+    private final String loginLink = "https://qusw.housing.queensu.ca:4430/login.asp?action=login";
+    private final String mealStatsLink = "https://qusw.housing.queensu.ca:4430/common/mealstats.asp";
+    private final String statusLink = "http://enochtam.com/status.html";
+    private final String msgLink = "http://enochtam.com/msg.html";
 
     private HashMap<String, String> mData = null;// post data
 
+    // context related variables
     private Context mContext;
-    @SuppressWarnings("unused")
 	private View rootView;
     private RemoteViews remoteView;
     private SharedPreferences prefs;
@@ -52,17 +56,22 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     //instance variables for main activity
     private TextView flexFundsTextView;
     private TextView diningDollarsTextView;
-    @SuppressWarnings("unused")
-    private TextView loginNumberTextView;
     private TextView status1TextView;
     private TextView status2TextView;
     private TextView leftThisWeekTextView;
     private LinearLayout mealPlanLinearLayout;
 
-    private boolean inWidget = false;
+    //http request variables
+    private HttpClient client;
+    private CookieStore cookieStore;
+    private HttpContext httpContext;
+    
+    private String msg = null;// msg used if app is disabled
+    
+    private boolean inWidget = false;//if updating the widget
 
     public AsyncHttpPost(HashMap<String, String> data,Context context,View rootView) {
-        mData = data;
+        this.mData = data;
         this.mContext = context;
         this.rootView = rootView;
 
@@ -70,7 +79,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
 
         flexFundsTextView = (TextView)rootView.findViewById(R.id.flexFundsTextView);
         diningDollarsTextView = (TextView)rootView.findViewById(R.id.diningDollarsTextView);
-        loginNumberTextView = (TextView)rootView.findViewById(R.id.loginNumberTextView);
         status1TextView = (TextView)rootView.findViewById(R.id.status1TextView);
         status2TextView = (TextView)rootView.findViewById(R.id.status2TextView);
         mealPlanLinearLayout = (LinearLayout)rootView.findViewById(R.id.mealPlanLinearLayout);
@@ -78,10 +86,10 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     }
 
     public AsyncHttpPost(HashMap<String, String> data,Context context,RemoteViews remoteView,AppWidgetManager appWidgetManager) {
-        mData = data;
+        this.mData = data;
         this.mContext = context;
         this.remoteView = remoteView;
-        inWidget = true;
+        this.inWidget = true;
 
         this.appWidgetManager = appWidgetManager;
 
@@ -97,57 +105,84 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         String loginResultStr = "";
         String htmlResult = "";
 
-        HttpClient client = new DefaultHttpClient();
-        CookieStore cookieStore = new BasicCookieStore();
-        HttpContext httpContext = new BasicHttpContext();
+        client = new DefaultHttpClient();
+        cookieStore = new BasicCookieStore();
+        httpContext = new BasicHttpContext();
 
-        HttpPost post = new HttpPost(loginLink);
-
-        try {
-            // set up post data
-            ArrayList<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
-            Iterator<String> it = mData.keySet().iterator();
-            while (it.hasNext()) {
-                String key = it.next();
-                nameValuePair.add(new BasicNameValuePair(key, mData.get(key)));
-            }
-
-            post.setEntity(new UrlEncodedFormEntity(nameValuePair, "UTF-8"));
-            HttpResponse response = client.execute(post,httpContext);
-            StatusLine statusLine = response.getStatusLine();
-            if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
-                result = EntityUtils.toByteArray(response.getEntity());
-                loginResultStr = new String(result, "UTF-8");
-            }else{
-                return "unidentified";
-            }
-        }catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return "unidentified";
-        }catch (Exception e) {
-            e.printStackTrace();
-            return "unidentified";
-        }
-
-        HttpGet httpget_scrape = new HttpGet(mealStatsLink);
         try{
-            HttpResponse response2 = client.execute(httpget_scrape, httpContext);
-            StatusLine statusLine2 = response2.getStatusLine();
-
-            if(statusLine2.getStatusCode() == HttpURLConnection.HTTP_OK){
-                String htmlString = EntityUtils.toString(response2.getEntity());
-                htmlResult = htmlString;
-            }else{
-                return "unidentified";
-            }
+        	if (!checkAppStatus()){
+        		return"override";
+        	}
+        	if(!loginRequest()){
+        		return"unidentified";
+        	}
+        	htmlResult = scrapeRequest();
         }catch (IOException e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            return "unidentified";
+        }catch (Exception e){
+            //e.printStackTrace();
             return "unidentified";
         }
-
+        
         return htmlResult;
     }
 
+    protected boolean checkAppStatus() throws IOException{// returns false if app is disabled
+        HttpGet check_status = new HttpGet(statusLink);
+
+        HttpResponse response0 = client.execute(check_status, httpContext);
+        StatusLine statusLine0 = response0.getStatusLine();
+
+        if(statusLine0.getStatusCode() == HttpURLConnection.HTTP_OK){
+            String string = EntityUtils.toString(response0.getEntity());
+            if(string.toLowerCase().contains("false")){
+                HttpGet get_msg = new HttpGet(msgLink);
+               	HttpResponse msg_res = client.execute(get_msg, httpContext);
+                StatusLine msg_statusLink = msg_res.getStatusLine();
+                if(msg_statusLink.getStatusCode() == HttpURLConnection.HTTP_OK){
+            		msg = EntityUtils.toString(msg_res.getEntity());
+                }
+            	return false;
+            }
+
+        }
+    	return true;
+    }
+    
+    protected boolean loginRequest() throws UnsupportedEncodingException, Exception{
+        HttpPost post = new HttpPost(loginLink);
+        // set up post data
+        ArrayList<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+        Iterator<String> it = mData.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            nameValuePair.add(new BasicNameValuePair(key, mData.get(key)));
+        }
+
+        post.setEntity(new UrlEncodedFormEntity(nameValuePair, "UTF-8"));
+        HttpResponse response = client.execute(post,httpContext);
+        StatusLine statusLine = response.getStatusLine();
+        if(statusLine.getStatusCode() != HttpURLConnection.HTTP_OK){
+        	return false;
+        }
+    	return true;
+    }
+    
+    protected String scrapeRequest() throws IOException{
+        HttpGet httpget_scrape = new HttpGet(mealStatsLink);
+        HttpResponse response2 = client.execute(httpget_scrape, httpContext);
+        StatusLine statusLine2 = response2.getStatusLine();
+
+        if(statusLine2.getStatusCode() == HttpURLConnection.HTTP_OK){
+            String htmlString = EntityUtils.toString(response2.getEntity());
+            return htmlString;
+        }else{
+            return "unidentified";
+        }
+
+    }
+    
     @Override
     protected void onPostExecute(String result) {
         if(inWidget){
@@ -157,6 +192,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         }
 
     }
+    
     protected void onPostExecuteNormal(String result){
         if((result.toLowerCase().contains("unidentified".toLowerCase()))){
             status1TextView.setTextColor(mContext.getResources().getColor(R.color.queensRed));
@@ -168,6 +204,17 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             status1TextView.setText("An Error Has Occurred");
             status2TextView.setTextColor(mContext.getResources().getColor(R.color.queensRed));
             status2TextView.setText("Check Username and Password in Settings");
+        }else if (result.toLowerCase().contains("override".toLowerCase())) {
+        	new AlertDialog.Builder(mContext)
+            .setTitle("Important Message")
+            .setMessage(msg)
+            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) { 
+                	
+                }
+             })
+            .setIcon(R.drawable.ic_action_warning)
+            .show();
         }else{
             MealStats mealStats = new MealStats(result);
             mealStats.parseHtml();
@@ -230,7 +277,9 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         }
     }
     protected void onPostExecuteInWidget(String result){
-        if( !(result.toLowerCase().contains("unidentified".toLowerCase())) && !(result.toLowerCase().contains("error".toLowerCase())) ){
+        if( !(result.toLowerCase().contains("unidentified".toLowerCase())) 
+        		&& !(result.toLowerCase().contains("error".toLowerCase())) 
+        		&& !(result.toLowerCase().contains("override".toLowerCase())) ){
 
             MealStats mealStats = new MealStats(result);
             mealStats.parseHtml();
