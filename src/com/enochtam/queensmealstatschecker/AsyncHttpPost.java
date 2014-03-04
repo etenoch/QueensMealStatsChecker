@@ -231,6 +231,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                         String text = "<font color=#000000>"+pair.getName()+"</font> <font color=#c30006>"+pair.getValue()+"</font>";
                         textView.setText(Html.fromHtml(text));
                         linearLayoutData.add(textView);
+
                     }else{
                         leftThisWeek = pair.getValue();
                     }
