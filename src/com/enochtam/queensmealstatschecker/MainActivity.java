@@ -19,13 +19,8 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
     SharedPreferences prefs;
 
-    TextView flexFundsTextView;
-    TextView diningDollarsTextView;
-    TextView loginNumberTextView;
-    TextView status1TextView;
-    TextView status2TextView;
-    TextView leftThisWeekTextView;
-    LinearLayout mealPlanLinearLayout;
+    View rootView;
+	MainActivityUIHandler ui;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +31,10 @@ public class MainActivity extends ActionBarActivity {
 
         firstTimeRun();
 
-        flexFundsTextView = (TextView)findViewById(R.id.flexFundsTextView);
-        diningDollarsTextView = (TextView)findViewById(R.id.diningDollarsTextView);
-        loginNumberTextView = (TextView)findViewById(R.id.loginNumberTextView);
-        status1TextView = (TextView)findViewById(R.id.status1TextView);
-        status2TextView = (TextView)findViewById(R.id.status2TextView);
-        mealPlanLinearLayout = (LinearLayout)findViewById(R.id.mealPlanLinearLayout);
-        leftThisWeekTextView = (TextView)findViewById(R.id.leftThisWeekTextView);
-
+        rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+    	ui = new MainActivityUIHandler(this, rootView);
+        
+        
         if(savedInstanceState==null){
             loadPreviousData();
             refreshData();
@@ -80,27 +71,22 @@ public class MainActivity extends ActionBarActivity {
         
         if(Helper.checkUserAndPass(username, password)){
 
-            loginNumberTextView.setText(username);
+        	ui.setloginNumberTextView(username);
             data.put("username", username);
             data.put("password", password);
         }else{
-            status1TextView.setTextColor(getResources().getColor(R.color.queensRed));
-            status1TextView.setText("Username and Password Not Provided");
+        	ui.setStatus1TextView("Username and Password Not Provided",true);
             return false;
         }
         if(!Helper.isOnline(this)){
-            status1TextView.setTextColor(getResources().getColor(R.color.queensRed));
-            status1TextView.setText("No Internet Connection");
+            ui.setStatus1TextView("No Internet Connection",true);
             loadPreviousData();
             return false;
         }
 
         //call the http request stuff here
 
-        status1TextView.setTextColor(getResources().getColor(R.color.queensRed));
-        status1TextView.setText("Loading Data");
-
-        View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        ui.setStatus1TextView("Loading Data",true);
 
         AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data,this,rootView);
         asyncHttpPost.execute();
@@ -115,35 +101,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void loadPreviousData(){
-        String flexFunds = prefs.getString("flexFunds", "");
-        String diningDollars = prefs.getString("diningDollars", "");
-        String leftThisWeek = prefs.getString("leftThisWeek", "");
-        
-        long lastUpdatedUnix = prefs.getLong("lastUpdated", 0);
-        String lastUpdated = Helper.getTime(lastUpdatedUnix);
-
-        if (flexFunds == null || flexFunds.isEmpty()) {
-            flexFundsTextView.setText("No Data");
-        }else{
-            flexFundsTextView.setText(flexFunds);
-        }
-        if (diningDollars == null || diningDollars.isEmpty()) {
-            diningDollarsTextView.setText("No Data");
-        }else{
-            diningDollarsTextView.setText(diningDollars);
-        }
-        if (lastUpdated == null || lastUpdated.isEmpty()) {
-            status2TextView.setText("Last Updated: never");
-        }else{
-            status2TextView.setText("Last Updated: "+ lastUpdated);
-        }
-        if (leftThisWeek == null || leftThisWeek.isEmpty()) {
-            leftThisWeekTextView.setText("No Data");
-        }else{
-            leftThisWeekTextView.setText(leftThisWeek);
-
-        }
-
+		ui.setDataFromSharedPrefs();
     }
 
     @Override
