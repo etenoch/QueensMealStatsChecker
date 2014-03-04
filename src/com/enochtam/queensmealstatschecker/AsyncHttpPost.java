@@ -53,14 +53,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     private SharedPreferences prefs;
     private AppWidgetManager appWidgetManager;
 
-    //instance variables for main activity
-    private TextView flexFundsTextView;
-    private TextView diningDollarsTextView;
-    private TextView status1TextView;
-    private TextView status2TextView;
-    private TextView leftThisWeekTextView;
-    private LinearLayout mealPlanLinearLayout;
-
     //http request variables
     private HttpClient client;
     private CookieStore cookieStore;
@@ -68,8 +60,9 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     
     private String msg = null;// msg used if app is disabled
     
-    private boolean inWidget = false;//if updating the widget
+    private boolean inWidget = false;//if only updating the widget
 
+    
     public AsyncHttpPost(HashMap<String, String> data,Context context,View rootView) {
         this.mData = data;
         this.mContext = context;
@@ -77,12 +70,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        flexFundsTextView = (TextView)rootView.findViewById(R.id.flexFundsTextView);
-        diningDollarsTextView = (TextView)rootView.findViewById(R.id.diningDollarsTextView);
-        status1TextView = (TextView)rootView.findViewById(R.id.status1TextView);
-        status2TextView = (TextView)rootView.findViewById(R.id.status2TextView);
-        mealPlanLinearLayout = (LinearLayout)rootView.findViewById(R.id.mealPlanLinearLayout);
-        leftThisWeekTextView = (TextView)rootView.findViewById(R.id.leftThisWeekTextView);
     }
 
     public AsyncHttpPost(HashMap<String, String> data,Context context,RemoteViews remoteView,AppWidgetManager appWidgetManager) {
@@ -96,7 +83,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
     }
-
+    
+    
     //background
     @SuppressWarnings("unused")
 	@Override
@@ -186,76 +174,66 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         if(inWidget){
-            onPostExecuteInWidget(result);
-        }else{
-            onPostExecuteNormal(result);
+            if( !(result.toLowerCase().contains("unidentified".toLowerCase())) 
+            		&& !(result.toLowerCase().contains("error".toLowerCase())) 
+            		&& !(result.toLowerCase().contains("override".toLowerCase())) ){
+	            onPostExecuteInWidget(result);
+            }
+        }else {
+        	MainActivityUIHandler uiHandler = new MainActivityUIHandler(mContext, rootView);
+        	if((result.toLowerCase().contains("unidentified".toLowerCase()))){  //http request error. most likely internet issue
+        		uiHandler.setStatus1TextView("An Error Has Occurred",true);
+        		uiHandler.setStatus2TextView("Check Internet Connection",true);
+
+	        }else if(result.toLowerCase().contains("error".toLowerCase())){  //login error
+        		uiHandler.setStatus1TextView("An Error Has Occurred",true);
+        		uiHandler.setStatus2TextView("Check Username and Password in Settings",true);
+	        }else if(result.toLowerCase().contains("override".toLowerCase())) {  // app status overide
+	        	new AlertDialog.Builder(mContext)
+	            .setTitle("Important Message")
+	            .setMessage(msg)
+	            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int which) { 
+	                	
+	                }
+	             })
+	            .setIcon(R.drawable.ic_action_warning)
+	            .show();
+	        	
+	        }else{
+	        	onPostExecuteNormal(result,uiHandler);
+	        }
+        	
         }
+    	
 
     }
     
-    protected void onPostExecuteNormal(String result){
-        if((result.toLowerCase().contains("unidentified".toLowerCase()))){
-            status1TextView.setTextColor(mContext.getResources().getColor(R.color.queensRed));
-            status1TextView.setText("An Error Has Occurred");
-            status2TextView.setTextColor(mContext.getResources().getColor(R.color.queensRed));
-            status2TextView.setText("Check Internet Connection");
-        }else if(result.toLowerCase().contains("error".toLowerCase())){
-            status1TextView.setTextColor(mContext.getResources().getColor(R.color.queensRed));
-            status1TextView.setText("An Error Has Occurred");
-            status2TextView.setTextColor(mContext.getResources().getColor(R.color.queensRed));
-            status2TextView.setText("Check Username and Password in Settings");
-        }else if (result.toLowerCase().contains("override".toLowerCase())) {
-        	new AlertDialog.Builder(mContext)
-            .setTitle("Important Message")
-            .setMessage(msg)
-            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) { 
-                	
-                }
-             })
-            .setIcon(R.drawable.ic_action_warning)
-            .show();
-        }else{
+    protected void onPostExecuteNormal(String result, MainActivityUIHandler uiHandler){
+
             MealStats mealStats = new MealStats(result);
             mealStats.parseHtml();
             String totalFlex =  "$" +String.valueOf(mealStats.getTotalFlex());
             String totalDining = "$"+String.valueOf(mealStats.getTotalDining());
-            if(flexFundsTextView!=null){
-                flexFundsTextView.setText(totalFlex);
-            }
-            if(diningDollarsTextView!=null){
-                diningDollarsTextView.setText(totalDining);
-            }
-            if(status1TextView!=null){
-                status1TextView.setTextColor(mContext.getResources().getColor(R.color.black));
-                status1TextView.setText("Data Loaded");
-            }
 
+            ArrayList<TextView> linearLayoutData = new ArrayList<TextView>();
 
             String leftThisWeek=null;
+            
             final float scale = mContext.getResources().getDisplayMetrics().density;
             if(!mealStats.mealData.isEmpty()){
-                if(mealPlanLinearLayout!=null){
-                    mealPlanLinearLayout.removeAllViews();
-                }
                 for(NameValuePair pair : mealStats.mealData){
                     TextView textView = new TextView(mContext);
-
                     if(!pair.getName().contains("left for week")){
                         textView.setTextAppearance(mContext, android.R.style.TextAppearance_Medium);
                         textView.setPadding((int) (10 * scale + 0.5f), 5, 10, 5);
 
                         String text = "<font color=#000000>"+pair.getName()+"</font> <font color=#c30006>"+pair.getValue()+"</font>";
                         textView.setText(Html.fromHtml(text));
-                        if(mealPlanLinearLayout!=null){
-                            mealPlanLinearLayout.addView(textView);
-                        }
+                        linearLayoutData.add(textView);
                     }else{
                         leftThisWeek = pair.getValue();
                     }
-                }
-                if(leftThisWeek!=null&&leftThisWeekTextView!=null){
-                    leftThisWeekTextView.setText(leftThisWeek);
                 }
             }
 
@@ -268,13 +246,15 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             editor.putString("diningDollars", totalDining);
             editor.putString("leftThisWeek", leftThisWeek);
             editor.commit();
-            if(status2TextView!=null){
-                status2TextView.setTextColor(mContext.getResources().getColor(R.color.black));
-                status2TextView.setText("Last Updated: "+currentDateTime);
-            }
-
             
-        }
+            uiHandler.setFlexFundsTextView(totalFlex);
+            uiHandler.setDiningDollarsTextView(totalDining);
+            uiHandler.setStatus2TextView("Last Updated: "+currentDateTime);
+            uiHandler.setLeftThisWeekTextView(leftThisWeek);
+            uiHandler.setMealPlanLinearLayout(linearLayoutData);
+            uiHandler.setStatus1TextView("Data Loaded");
+
+
     }
     protected void onPostExecuteInWidget(String result){
         if( !(result.toLowerCase().contains("unidentified".toLowerCase())) 
