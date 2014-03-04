@@ -39,7 +39,7 @@ import android.widget.TextView;
 
 public class AsyncHttpPost  extends AsyncTask<String, String, String> {
 	// constants for httprequests
-    private final String loginLink = "https://qusw.housing.queensu.ca:4430/login.asp?action=login";
+    private final String loginLink = "https://login.queensu.ca/idp/Authn/UserPassword";
     private final String mealStatsLink = "https://qusw.housing.queensu.ca:4430/common/mealstats.asp";
     private final String statusLink = "http://enochtam.com/status.html";
     private final String msgLink = "http://enochtam.com/msg.html";
@@ -153,6 +153,9 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         StatusLine statusLine = response.getStatusLine();
         if(statusLine.getStatusCode() != HttpURLConnection.HTTP_OK){
         	return false;
+        }else{
+            String loginString = EntityUtils.toString(response.getEntity());
+        	
         }
     	return true;
     }

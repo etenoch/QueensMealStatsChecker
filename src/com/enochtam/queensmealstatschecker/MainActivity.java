@@ -72,8 +72,9 @@ public class MainActivity extends ActionBarActivity {
         if(Helper.checkUserAndPass(username, password)){
 
         	ui.setloginNumberTextView(username);
-            data.put("username", username);
-            data.put("password", password);
+            data.put("Login", " Log In ");
+            data.put("j_username", username);
+            data.put("j_password", password);
         }else{
         	ui.setStatus1TextView("Username and Password Not Provided",true);
             return false;
