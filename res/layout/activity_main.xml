@@ -177,7 +177,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Note: Data only availible for those on\na Meal Plan"
+            android:text="Note: Data only available for those on\na Meal Plan"
             android:id="@+id/mealPlanDescriptionTextView"
             android:paddingLeft="10dp" />
     </LinearLayout>

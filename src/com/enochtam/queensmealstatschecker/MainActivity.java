@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,17 +30,18 @@ public class MainActivity extends ActionBarActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        firstTimeRun();
+        //firstTimeRun();
 
         rootView = getWindow().getDecorView().findViewById(android.R.id.content);
     	ui = new MainActivityUIHandler(this, rootView);
         
-        
+        /*
         if(savedInstanceState==null){
             loadPreviousData();
             refreshData();
-        	
+        	Log.e("TAM_APP", "from saved instance state");
         }
+        */
 
     }
 
@@ -49,6 +51,8 @@ public class MainActivity extends ActionBarActivity {
         firstTimeRun();
         loadPreviousData();
         refreshData();
+    	Log.e("TAM_APP", "from on resume");
+
     }
 
     private boolean firstTimeRun(){
@@ -124,7 +128,7 @@ public class MainActivity extends ActionBarActivity {
         }else if(id == R.id.action_refresh){
             long currentUnixTime = System.currentTimeMillis() / 1000L;
             long lastUpdatedUnix = prefs.getLong("lastUpdated", 0);
-        	if((currentUnixTime-lastUpdatedUnix)>30){
+        	if((currentUnixTime-lastUpdatedUnix)>15){
                 refreshData();
                 Toast.makeText(getApplicationContext(), "Refreshing Data", Toast.LENGTH_SHORT).show();
         	}else{

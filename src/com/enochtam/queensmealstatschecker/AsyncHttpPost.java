@@ -189,17 +189,19 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         		uiHandler.setStatus1TextView("An Error Has Occurred",true);
         		uiHandler.setStatus2TextView("Check Username and Password in Settings",true);
 	        }else if(result.toLowerCase().contains("override".toLowerCase())) {  // app status overide
+	        	
 	        	new AlertDialog.Builder(mContext)
 	            .setTitle("Important Message")
 	            .setMessage(msg)
 	            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 	                public void onClick(DialogInterface dialog, int which) { 
-	                	
+	                
 	                }
 	             })
 	            .setIcon(R.drawable.ic_action_warning)
 	            .show();
-	        	
+	            
+        		uiHandler.setStatus1TextView(msg,true);
 	        }else{
 	        	onPostExecuteNormal(result,uiHandler);
 	        }
