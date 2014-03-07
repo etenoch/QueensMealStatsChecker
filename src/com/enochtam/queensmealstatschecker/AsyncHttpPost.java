@@ -2,6 +2,8 @@ package com.enochtam.queensmealstatschecker;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,8 +35,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
@@ -94,6 +97,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         String htmlResult = "";
 
         client = new DefaultHttpClient();
+        client.getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
         cookieStore = new BasicCookieStore();
         httpContext = new BasicHttpContext();
 
@@ -102,15 +106,21 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         		return"override";
         	}
         	if(!loginRequest()){
-        		return"unidentified";
+        		return"unidentified login request";
         	}
         	htmlResult = scrapeRequest();
         }catch (IOException e){
             //e.printStackTrace();
-            return "unidentified";
+        	
+        	StringWriter errors = new StringWriter();
+        	//e.printStackTrace(new PrintWriter(errors));
+        	//Log.e("TAM_APP",errors.toString());
+        	return "unidentified "+errors.toString();
+        	
+            //return "unidentified io exception";
         }catch (Exception e){
             //e.printStackTrace();
-            return "unidentified";
+            return "unidentified exception";
         }
         
         return htmlResult;
@@ -166,7 +176,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             String htmlString = EntityUtils.toString(response2.getEntity());
             return htmlString;
         }else{
-            return "unidentified";
+            return "unidentified scrape request status line";
         }
 
     }

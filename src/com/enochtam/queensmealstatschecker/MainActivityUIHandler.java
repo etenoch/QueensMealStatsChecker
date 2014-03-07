@@ -87,11 +87,11 @@ public class MainActivityUIHandler {
         status1TextView.setText(text);
     }
     public void setStatus2TextView(String text){
-        status1TextView.setTextColor(context.getResources().getColor(R.color.black));
+        status2TextView.setTextColor(context.getResources().getColor(R.color.black));
         status2TextView.setText(text);
     }
     public void setStatus2TextView(String text,boolean red){
-        status1TextView.setTextColor(context.getResources().getColor(R.color.queensRed));
+        status2TextView.setTextColor(context.getResources().getColor(R.color.queensRed));
         status2TextView.setText(text);
     }
     public void setLeftThisWeekTextView(String text){

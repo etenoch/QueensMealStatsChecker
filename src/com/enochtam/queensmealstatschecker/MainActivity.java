@@ -126,15 +126,7 @@ public class MainActivity extends ActionBarActivity {
             startActivity(i);
             return true;
         }else if(id == R.id.action_refresh){
-            long currentUnixTime = System.currentTimeMillis() / 1000L;
-            long lastUpdatedUnix = prefs.getLong("lastUpdated", 0);
-        	if((currentUnixTime-lastUpdatedUnix)>15){
-                refreshData();
-                Toast.makeText(getApplicationContext(), "Refreshing Data", Toast.LENGTH_SHORT).show();
-        	}else{
-                Toast.makeText(getApplicationContext(), "Too Soon, Please wait a while", Toast.LENGTH_SHORT).show();
-        	}
-        	
+            refreshData();
             return true;
         }else if(id == R.id.action_about){
             Intent i = new Intent(MainActivity.this, AboutActivity.class);
