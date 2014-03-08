@@ -48,4 +48,13 @@
         android:textColor="@color/queensRed"
         android:textStyle="bold"
         android:singleLine="false" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:autoLink="web"        
+        android:text="This app will only work if you are able to login here: \nhttps://qusw.housing.queensu.ca:4430/index.asp" />
+
 </LinearLayout>
