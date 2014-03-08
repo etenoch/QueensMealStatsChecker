@@ -61,7 +61,7 @@ public class MainActivityUIHandler {
         }else{
         	setStatus2TextView("Last Updated: "+ lastUpdated);
         }
-        if (leftThisWeek == null || leftThisWeek.isEmpty()) {
+        if (leftThisWeek.length() == 0 || leftThisWeek == null || leftThisWeek.isEmpty()) {
         	setLeftThisWeekTextView("-");
         }else{
         	setLeftThisWeekTextView(leftThisWeek);
@@ -98,13 +98,12 @@ public class MainActivityUIHandler {
         leftThisWeekTextView.setText(text);
     }
     public void setMealPlanLinearLayout(ArrayList<TextView> data){
-        mealPlanLinearLayout.removeAllViews();
-        for(TextView textView : data){
-        	mealPlanLinearLayout.addView(textView);
-        }
-
-
-        
+    	if(!data.isEmpty()){
+    		mealPlanLinearLayout.removeAllViews();
+    		for(TextView textView : data){
+    			mealPlanLinearLayout.addView(textView);
+    		}    		
+    	}
     }
 	
 }

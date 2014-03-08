@@ -58,6 +58,7 @@ public class MealStats {
             }
         }// end for loop
 
+        
         boolean atTableFlag=false;
         Elements tables = doc.select("table");
         for(Element thisTable : tables){
@@ -85,6 +86,8 @@ public class MealStats {
 
         }// end for loop
 
+        
+        
     } // end parseHtml
 
     public double getTotalFlex(){

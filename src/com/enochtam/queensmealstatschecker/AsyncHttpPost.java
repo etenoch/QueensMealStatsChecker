@@ -263,8 +263,11 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             uiHandler.setFlexFundsTextView(totalFlex);
             uiHandler.setDiningDollarsTextView(totalDining);
             uiHandler.setStatus2TextView("Last Updated: "+currentDateTime);
-            uiHandler.setLeftThisWeekTextView(leftThisWeek);
+            if(leftThisWeek!=null){
+            	uiHandler.setLeftThisWeekTextView(leftThisWeek);            	
+            }
             uiHandler.setMealPlanLinearLayout(linearLayoutData);
+
             uiHandler.setStatus1TextView("Data Loaded");
 
 
@@ -289,9 +292,17 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                         leftThisWeek = pair.getValue();
                     }
                 }
-                if(leftThisWeek!=null){
+
+            }
+            if(leftThisWeek!=null){
+            	if(leftThisWeek.length() != 0 || !leftThisWeek.isEmpty()){
                     remoteView.setTextViewText(R.id.widgetLeftThisWeek, leftThisWeek);
-                }
+            		
+            	}else{
+                    remoteView.setTextViewText(R.id.widgetLeftThisWeek, "-");
+            	}
+            }else{
+                remoteView.setTextViewText(R.id.widgetLeftThisWeek, "-");
             }
 
             long unixTime = System.currentTimeMillis() / 1000L;
