@@ -172,11 +172,13 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         HttpResponse response2 = client.execute(httpget_scrape, httpContext);
         StatusLine statusLine2 = response2.getStatusLine();
 
-        if(statusLine2.getStatusCode() == HttpURLConnection.HTTP_OK){
-            String htmlString = EntityUtils.toString(response2.getEntity());
-            return htmlString;
+        if(statusLine2.getStatusCode() == HttpURLConnection.HTTP_INTERNAL_ERROR){
+        	return "possible login error";
+        }else if(statusLine2.getStatusCode() != HttpURLConnection.HTTP_OK){
+        	return "unidentified scrape request status line";
         }else{
-            return "unidentified scrape request status line";
+        	String htmlString = EntityUtils.toString(response2.getEntity());
+        	return htmlString;
         }
 
     }
@@ -191,13 +193,14 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             }
         }else {
         	MainActivityUIHandler uiHandler = new MainActivityUIHandler(mContext, rootView);
-        	if((result.toLowerCase().contains("unidentified".toLowerCase()))){  //http request error. most likely internet issue
-        		uiHandler.setStatus1TextView("An Error Has Occurred",true);
-        		uiHandler.setStatus2TextView("Check Internet Connection",true);
-
-	        }else if(result.toLowerCase().contains("error".toLowerCase())){  //login error
+        	if(result.toLowerCase().contains("error".toLowerCase())){  //login error
         		uiHandler.setStatus1TextView("An Error Has Occurred",true);
         		uiHandler.setStatus2TextView("Check Username and Password in Settings",true);
+        	
+        	}else if((result.toLowerCase().contains("unidentified".toLowerCase()))){  //http request error. most likely internet issue
+        		uiHandler.setStatus1TextView("An Error Has Occurred",true);
+        		uiHandler.setStatus2TextView("Check Internet Connection",true);
+ 
 	        }else if(result.toLowerCase().contains("override".toLowerCase())) {  // app status overide
 	        	
 	        	new AlertDialog.Builder(mContext)

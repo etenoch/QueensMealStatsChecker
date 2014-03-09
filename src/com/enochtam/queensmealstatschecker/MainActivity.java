@@ -60,7 +60,7 @@ public class MainActivity extends ActionBarActivity {
         String password = prefs.getString("password", "");
         if ( (username == null || username.isEmpty()) && (password == null || password.isEmpty())) {
             Intent i = new Intent(this, LoginActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         }
         return false;

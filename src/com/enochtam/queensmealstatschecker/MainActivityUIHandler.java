@@ -2,13 +2,9 @@ package com.enochtam.queensmealstatschecker;
 
 import java.util.ArrayList;
 
-import org.apache.http.NameValuePair;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
