@@ -49,7 +49,7 @@ public class LoginActivity extends ActionBarActivity {
             editor.commit();
 
             Intent i = new Intent(this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         }else{
             Toast.makeText(this, "Refreshing Data", Toast.LENGTH_SHORT).show();
