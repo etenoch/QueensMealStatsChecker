@@ -3,3 +3,4 @@ libs/
 gen/
 .settings/
 .classpath
+.project
