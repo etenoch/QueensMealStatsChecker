@@ -98,7 +98,7 @@ public class MainActivity extends ActionBarActivity {
     	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MealCheckerWidgetProvider.class));
         if (appWidgetIds.length > 0) {
-        	new MealCheckerWidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
+        	//new MealCheckerWidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
         }
         
         return true;

@@ -44,23 +44,21 @@
                 android:textColor="@color/black" />
         </RelativeLayout>
 
-
-        
         <ImageView
-			android:src="@drawable/vertical_separator"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent"
-			android:scaleType="fitXY"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_marginBottom="8dp"
-
+            android:layout_marginRight="1dp"
             android:layout_marginTop="8dp"
- />
+            android:scaleType="fitXY"
+            android:src="@drawable/vertical_separator" />
 			    
         <RelativeLayout
             android:id="@+id/rightSide"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="54dp"
-            android:layout_marginLeft="0dp" >
+            android:layout_marginLeft="0dp" 
+ >
 
             <TextView
                 android:id="@+id/textView2"

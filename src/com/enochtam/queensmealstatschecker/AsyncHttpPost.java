@@ -189,7 +189,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             if( !(result.toLowerCase().contains("unidentified".toLowerCase())) 
             		&& !(result.toLowerCase().contains("error".toLowerCase())) 
             		&& !(result.toLowerCase().contains("override".toLowerCase())) ){
-	            onPostExecuteInWidget(result);
+            	MealCheckerWidgetUIHandler widgetUIHandler = new MealCheckerWidgetUIHandler(mContext, remoteView, appWidgetManager);
+	            onPostExecuteInWidget(result, widgetUIHandler);
             }
         }else {
         	MainActivityUIHandler uiHandler = new MainActivityUIHandler(mContext, rootView);
@@ -272,56 +273,64 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             uiHandler.setMealPlanLinearLayout(linearLayoutData);
 
             uiHandler.setStatus1TextView("Data Loaded");
+            
+            
+            // update widget
+            RemoteViews temp_remoteView = new RemoteViews(mContext.getPackageName(),R.layout.mealchecker_appwidget_layout);
+        	AppWidgetManager temp_appWidgetManager = AppWidgetManager.getInstance(mContext);
+        	MealCheckerWidgetUIHandler widgetUIHandler = new MealCheckerWidgetUIHandler(mContext, temp_remoteView, temp_appWidgetManager);
+    		widgetUIHandler.setWidgetLeftThisWeek(leftThisWeek);
+    		widgetUIHandler.setWidgetFlexFunds(totalFlex);
+    		widgetUIHandler.setWidgetDiningDollars(totalDining);
+    		widgetUIHandler.setWidgetLastUpdated("Last Updated: "+currentDateTime);
+			widgetUIHandler.updateWidget();
 
 
     }
-    protected void onPostExecuteInWidget(String result){
-        if( !(result.toLowerCase().contains("unidentified".toLowerCase())) 
-        		&& !(result.toLowerCase().contains("error".toLowerCase())) 
-        		&& !(result.toLowerCase().contains("override".toLowerCase())) ){
+    protected void onPostExecuteInWidget(String result, MealCheckerWidgetUIHandler widgetUIHandler){
+        MealStats mealStats = new MealStats(result);
+        mealStats.parseHtml();
+        String totalFlex =  "$" +String.valueOf(mealStats.getTotalFlex());
+        String totalDining = "$"+String.valueOf(mealStats.getTotalDining());
 
-            MealStats mealStats = new MealStats(result);
-            mealStats.parseHtml();
-            String totalFlex =  "$" +String.valueOf(mealStats.getTotalFlex());
-            String totalDining = "$"+String.valueOf(mealStats.getTotalDining());
-
-            remoteView.setTextViewText(R.id.widgetFlexFunds, totalFlex);
-            remoteView.setTextViewText(R.id.widgetDiningDollars, totalDining);
-
-            String leftThisWeek=null;
-            if(!mealStats.mealData.isEmpty()){
-                for(NameValuePair pair : mealStats.mealData){
-                    if(pair.getName().contains("left for week")){
-                        leftThisWeek = pair.getValue();
-                    }
+        widgetUIHandler.setWidgetFlexFunds(totalFlex);
+        widgetUIHandler.setWidgetDiningDollars(totalDining);
+        
+        String leftThisWeek=null;
+        if(!mealStats.mealData.isEmpty()){
+            for(NameValuePair pair : mealStats.mealData){
+                if(pair.getName().contains("left for week")){
+                    leftThisWeek = pair.getValue();
                 }
-
-            }
-            if(leftThisWeek!=null){
-            	if(leftThisWeek.length() != 0 || !leftThisWeek.isEmpty()){
-                    remoteView.setTextViewText(R.id.widgetLeftThisWeek, leftThisWeek);
-            		
-            	}else{
-                    remoteView.setTextViewText(R.id.widgetLeftThisWeek, "-");
-            	}
-            }else{
-                remoteView.setTextViewText(R.id.widgetLeftThisWeek, "-");
             }
 
-            long unixTime = System.currentTimeMillis() / 1000L;
-            String currentDateTime = Helper.getTime(unixTime);
-
-            remoteView.setTextViewText(R.id.widgetLastUpdated, "Last Updated: "+currentDateTime);
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong("lastUpdated", unixTime);
-            editor.putString("flexFunds", totalFlex);
-            editor.putString("diningDollars", totalDining);
-            editor.putString("leftThisWeek", leftThisWeek);
-            editor.commit();
-
-            ComponentName mealCheckerWidget = new ComponentName(mContext,MealCheckerWidgetProvider.class);
-            appWidgetManager.updateAppWidget(mealCheckerWidget, remoteView);
         }
+        if(leftThisWeek!=null){
+        	if(leftThisWeek.length() != 0 || !leftThisWeek.isEmpty()){
+                widgetUIHandler.setWidgetLeftThisWeek(leftThisWeek);
+
+        	}else{
+                widgetUIHandler.setWidgetLeftThisWeek("-");
+
+        	}
+        }else{
+            widgetUIHandler.setWidgetLeftThisWeek("-");
+
+        }
+
+        long unixTime = System.currentTimeMillis() / 1000L;
+        String currentDateTime = Helper.getTime(unixTime);
+
+        widgetUIHandler.setWidgetLastUpdated("Last Updated: "+currentDateTime);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong("lastUpdated", unixTime);
+        editor.putString("flexFunds", totalFlex);
+        editor.putString("diningDollars", totalDining);
+        editor.putString("leftThisWeek", leftThisWeek);
+        editor.commit();
+
+        widgetUIHandler.updateWidget();
+        
     }
 }

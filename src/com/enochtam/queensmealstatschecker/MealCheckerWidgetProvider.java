@@ -16,6 +16,7 @@ public class MealCheckerWidgetProvider extends AppWidgetProvider {
     AppWidgetManager appWidgetManager;
     Context context;
     RemoteViews remoteView;
+    MealCheckerWidgetUIHandler widgetUIHandler;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {
@@ -30,6 +31,8 @@ public class MealCheckerWidgetProvider extends AppWidgetProvider {
         this.appWidgetManager = appWidgetManager;
         this.context=context;
         
+        widgetUIHandler = new MealCheckerWidgetUIHandler(context, remoteView, appWidgetManager);
+
         Intent launchAppIntent = new Intent(context, MainActivity.class);
         PendingIntent launchAppPendingIntent = PendingIntent.getActivity(context,
                 0, launchAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -38,16 +41,8 @@ public class MealCheckerWidgetProvider extends AppWidgetProvider {
         loadPreviousDataWidget();
     }
     public void loadPreviousDataWidget(){
-        String flexFunds = prefs.getString("flexFunds", "");
-        String diningDollars = prefs.getString("diningDollars", "");
-        String leftThisWeek = prefs.getString("leftThisWeek", "");
-        long unixTime = prefs.getLong("lastUpdated", 0);
-        String currentDateTime = Helper.getTime(unixTime);
-
-        remoteView.setTextViewText(R.id.widgetFlexFunds, flexFunds);
-        remoteView.setTextViewText(R.id.widgetDiningDollars, diningDollars);
-        remoteView.setTextViewText(R.id.widgetLeftThisWeek, leftThisWeek);
-        remoteView.setTextViewText(R.id.widgetLastUpdated, "Last Updated: "+currentDateTime);
+		widgetUIHandler.setDataFromSharedPrefs();
+		widgetUIHandler.updateWidget();
 
     }
     public void refreshDataWidget(){
