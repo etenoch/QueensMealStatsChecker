@@ -9,25 +9,22 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
-public class MealCheckerWidgetUIHandler extends WidgetUIHandler{
+public class MealsLeftCheckerWidgetUIHandler extends WidgetUIHandler{
 	
-	public MealCheckerWidgetUIHandler(Context context,RemoteViews remoteView, AppWidgetManager appWidgetManager){
+	public MealsLeftCheckerWidgetUIHandler(Context context,RemoteViews remoteView, AppWidgetManager appWidgetManager){
 		super(context, remoteView, appWidgetManager);
 
 	}
 	
 	public void setDataFromSharedPrefs(){
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String flexFunds = prefs.getString("flexFunds", "");
-        String diningDollars = prefs.getString("diningDollars", "");
+
         String leftThisWeek = prefs.getString("leftThisWeek", "");
         long unixTime = prefs.getLong("lastUpdated", 0);
         String currentDateTime = Helper.getTime(unixTime);
 
         setWidgetLeftThisWeek(leftThisWeek);
-        setWidgetFlexFunds(flexFunds);
-        setWidgetDiningDollars(diningDollars);
-        setWidgetLastUpdated("Last Updated: "+currentDateTime);
+        setWidgetLastUpdated(currentDateTime);
 
 	}
 	
@@ -36,11 +33,11 @@ public class MealCheckerWidgetUIHandler extends WidgetUIHandler{
 
 	}
 	public void setWidgetFlexFunds(String text){
-        remoteView.setTextViewText(R.id.widgetFlexFunds, text);
+        //remoteView.setTextViewText(R.id.widgetFlexFunds, text);
 
 	}
 	public void setWidgetDiningDollars(String text){
-        remoteView.setTextViewText(R.id.widgetDiningDollars, text);
+        //remoteView.setTextViewText(R.id.widgetDiningDollars, text);
 
 	}
 	public void setWidgetLastUpdated(String text){
@@ -49,7 +46,7 @@ public class MealCheckerWidgetUIHandler extends WidgetUIHandler{
 	}
 	
 	public void updateWidget(){
-	    ComponentName mealCheckerWidget = new ComponentName(context,MealCheckerWidgetProvider.class);
+	    ComponentName mealCheckerWidget = new ComponentName(context,MealsLeftCheckerWidgetProvider.class);
 	    appWidgetManager.updateAppWidget(mealCheckerWidget, remoteView);		
 	}
 	

@@ -11,12 +11,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
-public class MealCheckerWidgetProvider extends AppWidgetProvider {
+public class DollarsCheckerWidgetProvider extends AppWidgetProvider {
     SharedPreferences prefs;
     AppWidgetManager appWidgetManager;
     Context context;
     RemoteViews remoteView;
-    MealCheckerWidgetUIHandler widgetUIHandler;
+    DollarsCheckerWidgetUIHandler widgetUIHandler;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {
@@ -27,11 +27,11 @@ public class MealCheckerWidgetProvider extends AppWidgetProvider {
     
     public void updateWidget(Context context,AppWidgetManager appWidgetManager){
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.remoteView = new RemoteViews(context.getPackageName(),R.layout.mealchecker_appwidget_layout);
+        this.remoteView = new RemoteViews(context.getPackageName(),R.layout.dollarschecker_appwidget_layout);
         this.appWidgetManager = appWidgetManager;
         this.context=context;
         
-        widgetUIHandler = new MealCheckerWidgetUIHandler(context, remoteView, appWidgetManager);
+        widgetUIHandler = new DollarsCheckerWidgetUIHandler(context, remoteView, appWidgetManager);
 
         Intent launchAppIntent = new Intent(context, MainActivity.class);
         PendingIntent launchAppPendingIntent = PendingIntent.getActivity(context,
@@ -54,7 +54,7 @@ public class MealCheckerWidgetProvider extends AppWidgetProvider {
         if(Helper.checkUserAndPass(username, password) && Helper.isOnline(context)){
             data.put("username", username);
             data.put("password", password);
-	        AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data,context,remoteView,appWidgetManager,"main");
+	        AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data,context,remoteView,appWidgetManager,"dollars");
 	        asyncHttpPost.execute();
             
         }

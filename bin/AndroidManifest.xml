@@ -18,7 +18,8 @@
         android:screenOrientation="portrait"
         >
 
-        <receiver android:name=".MealCheckerWidgetProvider" >
+        <receiver android:name=".MealCheckerWidgetProvider" 
+            android:label="Queen's Meals and Flex $ Widget">
             <intent-filter>
                 <action
                     android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -56,6 +57,30 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <receiver android:name=".DollarsCheckerWidgetProvider"
+            android:label="Queen's Flex/Dining $ Widget">
+            <intent-filter>
+                <action
+                    android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/dollarschecker_appwidget" />
+            
+        </receiver>
+        <receiver android:name=".MealsLeftCheckerWidgetProvider"
+             android:label="Queen's Meals Left Widget">
+            <intent-filter>
+                <action
+                    android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/mealsleftchecker_appwidget" />
+            
+        </receiver>
 
     </application>
 

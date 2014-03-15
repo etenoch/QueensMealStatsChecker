@@ -26,6 +26,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import android.R.string;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -52,10 +53,14 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     // context related variables
     private Context mContext;
 	private View rootView;
-    private RemoteViews remoteView;
     private SharedPreferences prefs;
+    //widget related
+    private RemoteViews remoteView;
     private AppWidgetManager appWidgetManager;
 
+    private boolean inWidget = false;//if only updating the widget
+    private String widgetType;
+    
     //http request variables
     private HttpClient client;
     private CookieStore cookieStore;
@@ -63,7 +68,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     
     private String msg = null;// msg used if app is disabled
     
-    private boolean inWidget = false;//if only updating the widget
+
 
     
     public AsyncHttpPost(HashMap<String, String> data,Context context,View rootView) {
@@ -75,7 +80,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
 
     }
 
-    public AsyncHttpPost(HashMap<String, String> data,Context context,RemoteViews remoteView,AppWidgetManager appWidgetManager) {
+    public AsyncHttpPost(HashMap<String, String> data,Context context,RemoteViews remoteView,AppWidgetManager appWidgetManager, String widgetType) {
         this.mData = data;
         this.mContext = context;
         this.remoteView = remoteView;
@@ -83,6 +88,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
 
         this.appWidgetManager = appWidgetManager;
 
+        this.widgetType = widgetType;
+        
         prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
     }
@@ -189,7 +196,14 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             if( !(result.toLowerCase().contains("unidentified".toLowerCase())) 
             		&& !(result.toLowerCase().contains("error".toLowerCase())) 
             		&& !(result.toLowerCase().contains("override".toLowerCase())) ){
-            	MealCheckerWidgetUIHandler widgetUIHandler = new MealCheckerWidgetUIHandler(mContext, remoteView, appWidgetManager);
+            	WidgetUIHandler widgetUIHandler = null;
+            	if(widgetType=="main"){
+            		 widgetUIHandler = new MealCheckerWidgetUIHandler(mContext, remoteView, appWidgetManager);
+            	}else if(widgetType=="dollars"){
+            		 widgetUIHandler = new DollarsCheckerWidgetUIHandler(mContext, remoteView, appWidgetManager);
+            	}else if(widgetType=="meals"){
+        			widgetUIHandler = new MealsLeftCheckerWidgetUIHandler(mContext, remoteView, appWidgetManager);
+            	}
 	            onPostExecuteInWidget(result, widgetUIHandler);
             }
         }else {
@@ -276,18 +290,34 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             
             
             // update widget
-            RemoteViews temp_remoteView = new RemoteViews(mContext.getPackageName(),R.layout.mealchecker_appwidget_layout);
-        	AppWidgetManager temp_appWidgetManager = AppWidgetManager.getInstance(mContext);
-        	MealCheckerWidgetUIHandler widgetUIHandler = new MealCheckerWidgetUIHandler(mContext, temp_remoteView, temp_appWidgetManager);
+            RemoteViews temp_remoteView;
+        	AppWidgetManager temp_appWidgetManager;
+        	WidgetUIHandler widgetUIHandler;
+        	temp_appWidgetManager = AppWidgetManager.getInstance(mContext);
+        	
+        	temp_remoteView = new RemoteViews(mContext.getPackageName(),R.layout.mealchecker_appwidget_layout);
+        	widgetUIHandler = new MealCheckerWidgetUIHandler(mContext, temp_remoteView, temp_appWidgetManager);
     		widgetUIHandler.setWidgetLeftThisWeek(leftThisWeek);
     		widgetUIHandler.setWidgetFlexFunds(totalFlex);
     		widgetUIHandler.setWidgetDiningDollars(totalDining);
     		widgetUIHandler.setWidgetLastUpdated("Last Updated: "+currentDateTime);
 			widgetUIHandler.updateWidget();
+			
+        	temp_remoteView = new RemoteViews(mContext.getPackageName(),R.layout.dollarschecker_appwidget_layout);
+        	widgetUIHandler = new DollarsCheckerWidgetUIHandler(mContext, temp_remoteView, temp_appWidgetManager);
+    		widgetUIHandler.setWidgetFlexFunds(totalFlex);
+    		widgetUIHandler.setWidgetDiningDollars(totalDining);
+    		widgetUIHandler.setWidgetLastUpdated(currentDateTime);
+			widgetUIHandler.updateWidget();
+			
+        	temp_remoteView = new RemoteViews(mContext.getPackageName(),R.layout.mealsleftchecker_appwidget_layout);
+        	widgetUIHandler = new MealsLeftCheckerWidgetUIHandler(mContext, temp_remoteView, temp_appWidgetManager);
+    		widgetUIHandler.setWidgetLastUpdated(currentDateTime);
+			widgetUIHandler.updateWidget();
 
 
     }
-    protected void onPostExecuteInWidget(String result, MealCheckerWidgetUIHandler widgetUIHandler){
+    protected void onPostExecuteInWidget(String result, WidgetUIHandler widgetUIHandler){
         MealStats mealStats = new MealStats(result);
         mealStats.parseHtml();
         String totalFlex =  "$" +String.valueOf(mealStats.getTotalFlex());
@@ -321,7 +351,11 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         long unixTime = System.currentTimeMillis() / 1000L;
         String currentDateTime = Helper.getTime(unixTime);
 
-        widgetUIHandler.setWidgetLastUpdated("Last Updated: "+currentDateTime);
+        if(widgetType=="dollars" ||widgetType=="meals"){
+            widgetUIHandler.setWidgetLastUpdated(currentDateTime);
+        }else{
+            widgetUIHandler.setWidgetLastUpdated("Last Updated: "+currentDateTime);
+        }
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong("lastUpdated", unixTime);
