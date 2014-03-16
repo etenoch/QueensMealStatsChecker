@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
 
         Tab tab1 = actionBar
             .newTab()
-            .setText("Meal Stats")
+            .setText("Meal Plan Stats")
             .setTag("MealStatsFragment")
             .setTabListener(new SupportFragmentTabListener<StatsFragment>(R.id.content_view, this,"stats", StatsFragment.class));
         actionBar.addTab(tab1);

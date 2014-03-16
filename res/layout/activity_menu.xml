@@ -27,6 +27,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:text="Loading..."
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/queensRed"
         android:textColorHint="@color/queensRed" />
 
