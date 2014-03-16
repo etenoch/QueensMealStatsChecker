@@ -312,6 +312,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
 			
         	temp_remoteView = new RemoteViews(mContext.getPackageName(),R.layout.mealsleftchecker_appwidget_layout);
         	widgetUIHandler = new MealsLeftCheckerWidgetUIHandler(mContext, temp_remoteView, temp_appWidgetManager);
+    		widgetUIHandler.setWidgetLeftThisWeek(leftThisWeek);
     		widgetUIHandler.setWidgetLastUpdated(currentDateTime);
 			widgetUIHandler.updateWidget();
 
