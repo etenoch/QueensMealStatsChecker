@@ -30,6 +30,8 @@ public class AboutActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
