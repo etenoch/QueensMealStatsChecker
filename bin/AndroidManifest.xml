@@ -60,6 +60,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <activity
+            android:name="com.enochtam.queensmealstatschecker.MenuDisplayActivity"
+            android:label="Menu"
+            android:parentActivityName="com.enochtam.queensmealstatschecker.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
         <receiver android:name=".MealsLeftCheckerWidgetProvider"
              android:label="Queen's Meals Left Widget">
             <intent-filter>
