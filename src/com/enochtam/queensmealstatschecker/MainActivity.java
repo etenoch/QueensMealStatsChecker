@@ -1,21 +1,16 @@
 package com.enochtam.queensmealstatschecker;
 
-import java.util.HashMap;
-
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
     SharedPreferences prefs;
@@ -23,90 +18,42 @@ public class MainActivity extends ActionBarActivity {
     View rootView;
 	MainActivityUIHandler ui;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.content_view);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         //firstTimeRun();
 
-        rootView = getWindow().getDecorView().findViewById(android.R.id.content);
-    	ui = new MainActivityUIHandler(this, rootView);
+        //rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+    	//ui = new MainActivityUIHandler(this, rootView);
         
-        /*
-        if(savedInstanceState==null){
-            loadPreviousData();
-            refreshData();
-        	Log.e("TAM_APP", "from saved instance state");
-        }
-        */
+    	
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayShowTitleEnabled(true);
+
+        Tab tab1 = actionBar
+            .newTab()
+            .setText("Meal Stats")
+            .setTag("MealStatsFragment")
+            .setTabListener(new SupportFragmentTabListener<StatsFragment>(R.id.content_view, this,"stats", StatsFragment.class));
+        actionBar.addTab(tab1);
+        actionBar.selectTab(tab1);
+    	
+        Tab tab2 = actionBar
+                .newTab()
+                .setText("Caf Menu")
+                .setTag("CafMenuFragment")
+                .setTabListener(new SupportFragmentTabListener<MenuFragment>(R.id.content_view,this,"menu", MenuFragment.class));
+        actionBar.addTab(tab2);
+        
 
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        firstTimeRun();
-        loadPreviousData();
-        refreshData();
-    	Log.e("TAM_APP", "from on resume");
-
-    }
-
-    private boolean firstTimeRun(){
-        String username = prefs.getString("username", "");
-        String password = prefs.getString("password", "");
-        if ( (username == null || username.isEmpty()) && (password == null || password.isEmpty())) {
-            Intent i = new Intent(this, LoginActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-        }
-        return false;
-    }
-
-    private boolean refreshData(){
-        HashMap<String, String> data = new HashMap<String, String>();
-        
-        String username = prefs.getString("username", "");
-        String password = prefs.getString("password", "");
-        
-        
-        if(Helper.checkUserAndPass(username, password)){
-
-        	ui.setloginNumberTextView(username);
-            data.put("username", username);
-            data.put("password", password);
-        }else{
-        	ui.setStatus1TextView("Username and Password Not Provided",true);
-            return false;
-        }
-        if(!Helper.isOnline(this)){
-            ui.setStatus1TextView("No Internet Connection",true);
-            loadPreviousData();
-            return false;
-        }
-
-        //call the http request stuff here
-
-        ui.setStatus1TextView("Loading Data",true);
-
-        AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data,this,rootView);
-        asyncHttpPost.execute();
-
-    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MealCheckerWidgetProvider.class));
-        if (appWidgetIds.length > 0) {
-        	//new MealCheckerWidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
-        }
-        
-        return true;
-    }
-
-    private void loadPreviousData(){
-		ui.setDataFromSharedPrefs();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -124,9 +71,6 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             Intent i = new Intent(MainActivity.this, PreferencesActivity.class);
             startActivity(i);
-            return true;
-        }else if(id == R.id.action_refresh){
-            refreshData();
             return true;
         }else if(id == R.id.action_about){
             Intent i = new Intent(MainActivity.this, AboutActivity.class);

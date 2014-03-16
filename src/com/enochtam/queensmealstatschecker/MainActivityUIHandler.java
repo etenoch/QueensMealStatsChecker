@@ -42,6 +42,13 @@ public class MainActivityUIHandler {
         String leftThisWeek = prefs.getString("leftThisWeek", "");
         long lastUpdatedUnix = prefs.getLong("lastUpdated", 0);
         String lastUpdated = Helper.getTime(lastUpdatedUnix);
+        String username = prefs.getString("username", "");
+
+        if (username == null || username.isEmpty()) {
+        	setloginNumberTextView("-");
+        }else{
+        	setloginNumberTextView(flexFunds);
+        }
         
         if (flexFunds == null || flexFunds.isEmpty()) {
         	setFlexFundsTextView("-");
