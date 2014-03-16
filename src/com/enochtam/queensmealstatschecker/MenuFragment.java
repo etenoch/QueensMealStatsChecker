@@ -1,9 +1,6 @@
 package com.enochtam.queensmealstatschecker;
 
-import java.util.HashMap;
-
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -49,9 +46,9 @@ public class MenuFragment extends Fragment{
 
     }
     private boolean refreshData(){
-    	TextView loadingIndicator=  (TextView) rootView.findViewById(R.id.loadingIndicator);
-    	loadingIndicator.setText("Loading...");
-    	
+    	//TextView loadingIndicator=  (TextView) rootView.findViewById(R.id.loadingIndicator);
+    	//loadingIndicator.setText("Loading...");
+    	    	
         AsyncHttpGetMenu asyncHttpPost = new AsyncHttpGetMenu(getActivity(),rootView);
         asyncHttpPost.execute();
         

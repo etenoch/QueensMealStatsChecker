@@ -20,6 +20,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -49,11 +50,19 @@ public class AsyncHttpGetMenu  extends AsyncTask<String, String, String> {
     private ArrayList<MenuPage> mealPageDataArrayList = new ArrayList<MenuPage>();
     private ListView lv;
 
+    ProgressDialog progressDialog;
+    
     public AsyncHttpGetMenu(Context context,View rootView) {
         this.mContext = context;
         this.rootView = rootView;
     }
 
+    protected void onPreExecute(){
+    	progressDialog= new ProgressDialog(mContext);
+    	progressDialog.setMessage("Loading");
+    	progressDialog.setCancelable(false);
+    	progressDialog.show();
+    }
     
     //background
     @SuppressWarnings("unused")
@@ -123,8 +132,10 @@ public class AsyncHttpGetMenu  extends AsyncTask<String, String, String> {
 
     	lv.setAdapter(arrayAdapter);
     	
-    	TextView loadingIndicator=  (TextView) rootView.findViewById(R.id.loadingIndicator);
-    	loadingIndicator.setText("");
+    	//TextView loadingIndicator=  (TextView) rootView.findViewById(R.id.loadingIndicator);
+    	//loadingIndicator.setText("");
+    	
+    	progressDialog.dismiss();
     	
     	lv.setOnItemClickListener(new OnItemClickListener() {
             @Override

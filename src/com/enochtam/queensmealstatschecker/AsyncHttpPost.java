@@ -2,7 +2,6 @@ package com.enochtam.queensmealstatschecker;
 
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -26,17 +25,15 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
-import android.R.string;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -68,8 +65,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
     
     private String msg = null;// msg used if app is disabled
     
-
-
     
     public AsyncHttpPost(HashMap<String, String> data,Context context,View rootView) {
         this.mData = data;
@@ -93,8 +88,7 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
         prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
     }
-    
-    
+        
     //background
     @SuppressWarnings("unused")
 	@Override

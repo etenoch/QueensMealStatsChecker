@@ -33,7 +33,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="0dp"
-        android:text="Developed by Enoch Tam, CompSci &apos;17\nFor more information get in touch at contact@enochtam.com\n\nUse at your own risk. This software comes with no guarantees. If you have problems you can contact me or submit an issue at \nhttp://enochtam.com/appissues \n\nVersion Code: 11 \nVersion: 0.9.2"
+        android:text="Developed by Enoch Tam, CompSci &apos;17\nFor more information get in touch at contact@enochtam.com\n\nUse at your own risk. This software comes with no guarantees. If you have problems you can contact me or submit an issue at \nhttp://enochtam.com/appissues \n\nVersion Code: 14 \nVersion: 0.9.4"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
