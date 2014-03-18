@@ -30,4 +30,15 @@
         android:textColor="@color/queensRed"
         android:textColorHint="@color/queensRed" />
 
+    <TextView
+        android:id="@+id/menuListStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/queensRed" />
+
 </RelativeLayout>

@@ -18,7 +18,8 @@ public class MenuFragment extends Fragment{
     View rootView;
     SharedPreferences prefs;
     View fragView;
-	
+	TextView tv;
+    
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		fragView = inflater.inflate(R.layout.activity_menu, container, false); 
 		
@@ -49,6 +50,12 @@ public class MenuFragment extends Fragment{
     	//TextView loadingIndicator=  (TextView) rootView.findViewById(R.id.loadingIndicator);
     	//loadingIndicator.setText("Loading...");
     	    	
+    	 if(!Helper.isOnline(getActivity())){
+		 	tv = (TextView) rootView.findViewById(R.id.menuListStatus);
+    		tv.setText("An Error has occured.\nPlease check your internet connection.");
+		 	return false;
+         }
+    	
         AsyncHttpGetMenu asyncHttpPost = new AsyncHttpGetMenu(getActivity(),rootView);
         asyncHttpPost.execute();
         

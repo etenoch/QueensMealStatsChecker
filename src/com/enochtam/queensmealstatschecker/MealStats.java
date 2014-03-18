@@ -65,15 +65,15 @@ public class MealStats {
             Elements tableRows = thisTable.select("tr");
 
             if(atTableFlag){
-                Element shouldHaveWeekly = tableRows.first().select("td").get(1);
-                if(shouldHaveWeekly.text().contains("Weekly ")){
+                //Element shouldHaveWeekly = tableRows.first().select("td").get(1);
+                //if(shouldHaveWeekly.text().contains("Weekly ")){
                     for(Element thisRow:tableRows){
                         Element cell1 = thisRow.select("td").first();
                         Element cell2 = thisRow.select("td").get(1);
                         mealData.add(new BasicNameValuePair(cell1.text(), cell2.text()));
 
                     }
-                }
+                //}
                 atTableFlag=false;
             }
 

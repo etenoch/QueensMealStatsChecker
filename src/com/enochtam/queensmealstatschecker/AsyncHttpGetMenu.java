@@ -22,6 +22,8 @@ import org.jsoup.select.Elements;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
@@ -31,7 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AsyncHttpGetMenu  extends AsyncTask<String, String, String> {
+public class AsyncHttpGetMenu  extends AsyncTask<String, String, Boolean> {
 	// constants for httprequests
     private final String homepageLink = "http://dining.queensu.ca/where-to-dine/todays-menus/";
 
@@ -49,6 +51,7 @@ public class AsyncHttpGetMenu  extends AsyncTask<String, String, String> {
     
     private ArrayList<MenuPage> mealPageDataArrayList = new ArrayList<MenuPage>();
     private ListView lv;
+    private TextView tv;
 
     ProgressDialog progressDialog;
     
@@ -60,14 +63,23 @@ public class AsyncHttpGetMenu  extends AsyncTask<String, String, String> {
     protected void onPreExecute(){
     	progressDialog= new ProgressDialog(mContext);
     	progressDialog.setMessage("Loading");
-    	progressDialog.setCancelable(false);
+    	progressDialog.setCancelable(true);
+        progressDialog.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+        		tv = (TextView) rootView.findViewById(R.id.menuListStatus);
+        		tv.setText("An Error has occured.\nPlease check your internet connection.");
+        		cancel(true);
+            }
+        });
+    	
     	progressDialog.show();
     }
     
     //background
     @SuppressWarnings("unused")
 	@Override
-    protected String doInBackground(String... params) {
+    protected Boolean doInBackground(String... params) {
         byte[] result = null;
         String loginResultStr = "";
         String htmlResult = "";
@@ -89,10 +101,10 @@ public class AsyncHttpGetMenu  extends AsyncTask<String, String, String> {
         	}
         	
         }catch (Exception e){
-            return "unidentified";
+            return false;
         }
         
-        return htmlResult;
+        return true;
     }
 
     protected String getLinks() throws IOException, Exception{
@@ -122,34 +134,40 @@ public class AsyncHttpGetMenu  extends AsyncTask<String, String, String> {
     }
     
     @Override
-    protected void onPostExecute(String result) {
-    	lv = (ListView) rootView.findViewById(R.id.menuListView);
-    	ArrayList<String> justStrings = new ArrayList<String>();
-    	for (MenuPage m : mealPageDataArrayList){
-    		justStrings.add(m.title);
+    protected void onPostExecute(Boolean result) {
+		tv = (TextView) rootView.findViewById(R.id.menuListStatus);
+
+    	if(result){
+    		lv = (ListView) rootView.findViewById(R.id.menuListView);
+    		ArrayList<String> justStrings = new ArrayList<String>();
+    		for (MenuPage m : mealPageDataArrayList){
+    			justStrings.add(m.title);
+    		}
+    		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext,android.R.layout.simple_list_item_1 ,justStrings);
+    		tv.setText("");
+    		lv.setAdapter(arrayAdapter);
+    		
+    		//TextView loadingIndicator=  (TextView) rootView.findViewById(R.id.loadingIndicator);
+    		//loadingIndicator.setText("");
+    		
+    		progressDialog.dismiss();
+    		
+    		lv.setOnItemClickListener(new OnItemClickListener() {
+    			@Override
+    			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+    				
+    				//Toast.makeText(mContext, mealPageDataArrayList.get((int)id).link, Toast.LENGTH_SHORT).show();
+    				
+    				Intent i = new Intent(mContext, MenuDisplayActivity.class);
+    				i.putExtra("title",mealPageDataArrayList.get((int)id).title);
+    				i.putExtra("link",mealPageDataArrayList.get((int)id).link);
+    				
+    				mContext.startActivity(i);
+    			}
+    		});
+    	}else{
+    		tv.setText("An Error has occured.\nPlease check your internet connection.");
     	}
-    	ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext,android.R.layout.simple_list_item_1 ,justStrings);
-
-    	lv.setAdapter(arrayAdapter);
-    	
-    	//TextView loadingIndicator=  (TextView) rootView.findViewById(R.id.loadingIndicator);
-    	//loadingIndicator.setText("");
-    	
-    	progressDialog.dismiss();
-    	
-    	lv.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-                
-                //Toast.makeText(mContext, mealPageDataArrayList.get((int)id).link, Toast.LENGTH_SHORT).show();
-            	
-                Intent i = new Intent(mContext, MenuDisplayActivity.class);
-                i.putExtra("title",mealPageDataArrayList.get((int)id).title);
-                i.putExtra("link",mealPageDataArrayList.get((int)id).link);
-
-                mContext.startActivity(i);
-            }
-        });
     	
     }
     
